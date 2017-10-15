@@ -106,19 +106,22 @@ int main(int argc, char *argv[])
             distances[newVertex] = newDist;
             predecessors[newVertex] = newPred;
 
-            for (index = 0; index < ROWS; index++)
+            cout << "Vertex queue empty" << endl;
+            
+            cout << "Distances: ";
+            for(index = 0; index < ROWS; index++) 
             {
-              if(source != index)
-              {
-                distances[index] = INF;
-              }
-              else
-              {
-                distances[index] = 0;
-              }
-        
-              predecessors[index] = -1;
+              cout << distances[index] << " ";
             }
+            cout << endl;
+      
+            cout << "Predecessors: ";
+            for(index = 0; index < ROWS; index++) 
+            {
+              cout << predecessors[index] << " ";
+            }
+            cout << endl;
+            
           }
           // Append vertex to queue for re-examining
           vertexQueue.push(newVertex);
