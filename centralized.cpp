@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
   // Initialization
   int numTasks, rank, dest, src, requestTag = 1;
   int responseTag = 2;
-  int index, currentVertex, newVertex, newDist, newPred, source;
+  int index, currentVertex, newVertex, newDist, source;
   int distances[ROWS];
   int predecessors[ROWS];
   MPI_Status status;
@@ -88,41 +88,20 @@ int main(int argc, char *argv[])
         MPI_Send(distances, ROWS, MPI_INT, src, requestTag, MPI_COMM_WORLD);
         MPI_Send(predecessors, ROWS, MPI_INT, src, requestTag, MPI_COMM_WORLD);
                 
-        // Get vertex from any worker node
-        MPI_Recv(&newVertex, 1, MPI_INT, MPI_ANY_SOURCE, responseTag, MPI_COMM_WORLD, &status);      
+        // Get vertex count from any worker node
+        MPI_Recv(&counter, 1, MPI_INT, MPI_ANY_SOURCE, responseTag, MPI_COMM_WORLD, &status);      
         src = status.MPI_SOURCE;
 
-        // Check if master was sent a valid vertex
-        if(newVertex != -1)
+        // Loop through all vertices that will be sent from that worker
+        for(index = 0; index < counter; index++)
         {
-          // Get new distance and predecessor to vertex
-          MPI_Recv(&newDist, 1, MPI_INT, src, responseTag, MPI_COMM_WORLD, &status);        
-          MPI_Recv(&newPred, 1, MPI_INT, src, responseTag, MPI_COMM_WORLD, &status);        
+          // Get current vertex from worker
+          MPI_Recv(&newVertex, 1, MPI_INT, src, responseTag, MPI_COMM_WORLD, &status);      
           
-          // Check if new value is actually an improvement
-          if(newDist < distances[newVertex])
-          {
-            // Update distance and predecessor matrix 
-            distances[newVertex] = newDist;
-            predecessors[newVertex] = newPred;
-
-            cout << "Vertex queue empty" << endl;
-            
-            cout << "Distances: ";
-            for(index = 0; index < ROWS; index++) 
-            {
-              cout << distances[index] << " ";
-            }
-            cout << endl;
-      
-            cout << "Predecessors: ";
-            for(index = 0; index < ROWS; index++) 
-            {
-              cout << predecessors[index] << " ";
-            }
-            cout << endl;
-            
-          }
+          // Get new distance and predecessor to vertex
+          MPI_Recv(&distances[newVertex], 1, MPI_INT, src, responseTag, MPI_COMM_WORLD, &status);        
+          MPI_Recv(&predecessors[newVertex], 1, MPI_INT, src, responseTag, MPI_COMM_WORLD, &status);        
+          
           // Append vertex to queue for re-examining
           vertexQueue.push(newVertex);
         }
@@ -145,6 +124,7 @@ int main(int argc, char *argv[])
       cout << endl;
 
       // Loop for each worker node
+      counter = 0;
       while(counter > 0)
       {        
         // Get worker node's request message
@@ -192,22 +172,28 @@ int main(int argc, char *argv[])
               distances[index] = newDist;
               predecessors[index] = newVertex;
 
-              // Send master new vertex to add to queue
-              MPI_Send(&index, 1, MPI_INT, MASTER, responseTag, MPI_COMM_WORLD);   
-              
-              // Send master new predecessor to current vertex and new current optimal distance
-              MPI_Send(&distances[index], 1, MPI_INT, MASTER, responseTag, MPI_COMM_WORLD);   
-              MPI_Send(&predecessors[index], 1, MPI_INT, MASTER, responseTag, MPI_COMM_WORLD);                 
+              vertexQueue.push(index);                 
             }
           }
         }
         
-        // Check if no new paths found
-        if(counter == 0)
-        {
-          // Send master indication that no paths were found
-          MPI_Send(&termination, 1, MPI_INT, MASTER, responseTag, MPI_COMM_WORLD);             
-        }
+        // Send master number of vertices to add
+        MPI_Send(&counter, 1, MPI_INT, MASTER, responseTag, MPI_COMM_WORLD);   
+          
+        // Send master each new vertex to add
+        for(index = 0; index < counter; index++)
+          {
+            newVertex = vertexQueue.front();
+            vertexQueue.pop();
+  
+            // Send master new vertex to add to queue
+            MPI_Send(&newVertex, 1, MPI_INT, MASTER, responseTag, MPI_COMM_WORLD); 
+            
+            // Send master new predecessor to current vertex and new current optimal distance
+            MPI_Send(&distances[newVertex], 1, MPI_INT, MASTER, responseTag, MPI_COMM_WORLD);   
+            MPI_Send(&predecessors[newVertex], 1, MPI_INT, MASTER, responseTag, MPI_COMM_WORLD);     
+          }
+        
 
         // Request new task from master
         MPI_Send(&rank, 1, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD);
