@@ -105,6 +105,20 @@ int main(int argc, char *argv[])
             // Update distance and predecessor matrix 
             distances[newVertex] = newDist;
             predecessors[newVertex] = newPred;
+
+            for (index = 0; index < ROWS; index++)
+            {
+              if(source != index)
+              {
+                distances[index] = INF;
+              }
+              else
+              {
+                distances[index] = 0;
+              }
+        
+              predecessors[index] = -1;
+            }
           }
           // Append vertex to queue for re-examining
           vertexQueue.push(newVertex);
