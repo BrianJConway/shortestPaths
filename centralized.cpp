@@ -3,14 +3,23 @@
 #include <iostream>
 #include <limits>
 #include <queue>
+#include <random>
 
 using namespace std;
 
 const int ROWS = 6;
 const int COLS = 6;
+
+const int MIN_DIST = 0;
+const int MAX_DIST = 200;
+
+const int NEIGHBOR_PROB = 30;
+
+const int VERTICES = 6;
 const int MASTER = 0;
 
 const int INF = std::numeric_limits<int>::max();
+
 
 // Create graph adjacency matrix
 int graph[ROWS][COLS] =
@@ -23,6 +32,11 @@ int graph[ROWS][COLS] =
   { INF, INF, INF, INF, INF, INF },
 };
 
+void genConnectedGraph(int** graph, bool isDirected);
+
+bool isConnected(int** graph);
+
+void initializeGraph(int** graph);
 
 int main(int argc, char *argv[])
 {
@@ -36,6 +50,9 @@ int main(int argc, char *argv[])
   queue<int> vertexQueue;
   int counter = 0;
   int termination = -1;
+  int myGraph[VERTICES][VERTICES];
+
+    initializeGraph(myGraph);
 
     // Initialize MPI
     MPI_Init(&argc, &argv);
@@ -200,4 +217,93 @@ int main(int argc, char *argv[])
         MPI_Recv(&newVertex, 1, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD, &status);             
       }
     }
+}
+
+void initializeGraph(int** graph)
+{
+  for(int rowIndex = 0; rowIndex < VERTICES; rowIndex++)
+  {
+    for(int colIndex = 0; colIndex < VERTICES; colIndex++)
+    {
+      if(rowIndex == colIndex)
+      {
+        graph[rowIndex][colIndex] = 0;
+      }
+      else
+      {
+        graph[rowIndex][colIndex] = INF;
+      }
+    } 
+  }
+}
+
+void genConnectedGraph(int** graph, bool isDirected)
+{
+  // initialize function/variables
+  int outerIndex, innerIndex, rowIndex, colIndex;
+  int neighborVal, randomDistance;
+  random_device rd;
+  default_random_engine_generator(rd());
+  uniform_real_distribution<int> dist(MIN_DIST, MAX_DISt);
+  uniform_real_distribution<int> dist2(0, 100);
+  
+  // Loop while graph generated is not connected
+  do
+  {
+    // Check if graph is directed
+    if(isDirected)
+    {
+      // Loop through each row
+      for(rowIndex = 0; rowIndex < VERTICES; rowIndex++)
+      {
+        // Loop through each column
+        for(colIndex = 0; colIndex < VERTICES; colIndex++)
+        {
+          // Generate value to check if vertices are neighbors
+          neighborVal = dist2(generator);
+
+          // Check if value indicates vertices are neighbors
+          if(neighborVal <= NEIGHBOR_PROB)
+          {
+            // Generate random distance for the edge
+            randomDistance = dist(generator);
+
+            // Set distance
+            graph[rowIndex][colIndex] = randomDistance;
+          }
+        }
+      }
+    }
+    // Otherwise, assume undirected graph
+    else
+    {
+      // Loop through each row
+      for(rowIndex = 0; rowIndex < VERTICES; rowIndex++)
+      {
+        // Loop through columns
+        for(colIndex = rowIndex + 1; colIndex < VERTICES; colIndex++)
+        {
+          // Generate value to check if vertices are neighbors
+          neighborVal = dist2(generator);
+
+          // Check if value indicates vertices are neighbors
+          if(neighborVal <= NEIGHBOR_PROB)
+          {
+            // Generate random distance for the edge
+            randomDistance = dist(generator);
+
+            // Set distance
+            graph[rowIndex][colIndex] = randomDistance;
+            graph[colIndex][rowIndex] = randomDistance;
+          }
+        }
+      }
+    }
+  }
+  while(!isConnected)
+}
+
+bool isConnected(int** graph)
+{
+
 }
