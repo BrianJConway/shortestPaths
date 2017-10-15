@@ -4,6 +4,7 @@
 #include <limits>
 #include <queue>
 #include <random>
+#include <stack>
 
 using namespace std;
 
@@ -300,10 +301,63 @@ void genConnectedGraph(int** graph, bool isDirected)
       }
     }
   }
-  while(!isConnected)
+  while(!isConnected(graph))
 }
 
 bool isConnected(int** graph)
 {
+  // initialize function/variables
+  stack<int> vertices;
+  int vertex;
+  bool nodesVisisted[VERTICES];
+  int index; 
+  bool isConnected = true;
 
+    // initialize nodes visited array
+    for(index = 0; index < VERTICES; index++)
+    {
+      nodesVisisted[index] = false;
+    }
+
+  // Perform a depth-first traversal of the graph
+
+    // Push first vertex onto the stack
+    vertices.push(0);
+
+    // Loop while stack is not empty
+    while(!vertices.empty())
+    {
+      // Pop off current vertex
+      vertex = vertices.top();
+      vertices.pop();
+
+      // Check if vertex was not visited
+      if(!nodesVisited[vertex])
+      {
+        // label vertex as discovered
+        nodesVisited[vertex] = true;
+
+        // Loop through vertices to find neighbors
+        for(index = 0; index < VERTICES; index++)
+        {
+          // Check if vertex is a neighbor
+          if(graph[vertex][index] != INF)
+          {
+            // Push neighbor onto stack
+            vertices.push(index);
+          }
+        }
+      }
+    }
+    // Check if all nodes were visited
+    for(index = 0; index < VERTICES; index++)
+    {
+      // Check if node was not visited
+      if(!nodesVisited[index])
+      {
+        isConnected = false;
+      }
+    }
+
+  return isConnected;
 }
