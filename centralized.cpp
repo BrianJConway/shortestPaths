@@ -1,4 +1,4 @@
-//#include <mpi.h>
+#include <mpi.h>
 #include <cstdlib>
 #include <iostream>
 #include <limits>
@@ -8,36 +8,24 @@
 
 using namespace std;
 
-const int ROWS = 6;
-const int COLS = 6;
-
 const int MIN_DIST = 0;
 const int MAX_DIST = 200;
 
 const int NEIGHBOR_PROB = 30;
 
 const int VERTICES = 6;
+const bool IS_DIRECTED = false;
 const int MASTER = 0;
 
 const int INF = std::numeric_limits<int>::max();
 
 
-// Create graph adjacency matrix
-int graph[ROWS][COLS] =
-{
-  { INF,  10, INF, INF, INF, INF },
-  { INF, INF,   8,  13,  24,  51 },
-  { INF, INF, INF,  14, INF, INF },
-  { INF, INF, INF, INF,   9, INF },
-  { INF, INF, INF, INF, INF,  17 },
-  { INF, INF, INF, INF, INF, INF },
-};
+void initializeGraph(int graph[][VERTICES]);
 
 void genConnectedGraph(int graph[][VERTICES], bool isDirected);
 
 bool isConnected(int graph[][VERTICES]);
 
-void initializeGraph(int graph[][VERTICES]);
 
 int main(int argc, char *argv[])
 {
@@ -45,26 +33,18 @@ int main(int argc, char *argv[])
   int numTasks, rank, dest, src, requestTag = 1;
   int responseTag = 2;
   int index, currentVertex, newVertex, newDist, source;
-  int distances[ROWS];
-  int predecessors[ROWS];
-//  MPI_Status status;
+  int distances[VERTICES];
+  int predecessors[VERTICES];
+  MPI_Status status;
   queue<int> vertexQueue;
   int counter = 0;
   int termination = -1;
-  int myGraph[VERTICES][VERTICES];
+  int graph[VERTICES][VERTICES];
 
-    initializeGraph(myGraph);
-    genConnectedGraph(myGraph, false);
+    // Initialize and generate random values for graph
+    initializeGraph(graph);
+    genConnectedGraph(graph, IS_DIRECTED);
 
-    for(int rowIndex = 0; rowIndex < VERTICES; rowIndex++)
-    {
-      for(int colIndex = 0; colIndex < VERTICES; colIndex++)
-      {
-        cout << myGraph[rowIndex][colIndex] << "\t";
-      }
-      cout << endl;  
-    }
-/*
     // Initialize MPI
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &numTasks);
@@ -81,18 +61,18 @@ int main(int argc, char *argv[])
     source = 0;
 
     // Initialize distances and predecessor matrices
-    for (index = 0; index < ROWS; index++)
+    for (index = 0; index < VERTICES; index++)
     {
       if(source != index)
       {
         distances[index] = INF;
+        predecessors[index] = -1;
       }
       else
       {
         distances[index] = 0;
+        predecessors[index] = 0;
       }
-
-      predecessors[index] = -1;
     }
 
   // Check if master node
@@ -113,8 +93,8 @@ int main(int argc, char *argv[])
 
         // Send worker node its task and the distance/predecessor matrices
         MPI_Send(&currentVertex, 1, MPI_INT, src, requestTag, MPI_COMM_WORLD);
-        MPI_Send(distances, ROWS, MPI_INT, src, requestTag, MPI_COMM_WORLD);
-        MPI_Send(predecessors, ROWS, MPI_INT, src, requestTag, MPI_COMM_WORLD);
+        MPI_Send(distances, VERTICES, MPI_INT, src, requestTag, MPI_COMM_WORLD);
+        MPI_Send(predecessors, VERTICES, MPI_INT, src, requestTag, MPI_COMM_WORLD);
                 
         // Get vertex count from any worker node
         MPI_Recv(&counter, 1, MPI_INT, MPI_ANY_SOURCE, responseTag, MPI_COMM_WORLD, &status);      
@@ -138,14 +118,14 @@ int main(int argc, char *argv[])
       cout << "Vertex queue empty" << endl;
       
       cout << "Distances: ";
-      for(index = 0; index < ROWS; index++) 
+      for(index = 0; index < VERTICES; index++) 
       {
         cout << distances[index] << " ";
       }
       cout << endl;
 
       cout << "Predecessors: ";
-      for(index = 0; index < ROWS; index++) 
+      for(index = 0; index < VERTICES; index++) 
       {
         cout << predecessors[index] << " ";
       }
@@ -177,14 +157,14 @@ int main(int argc, char *argv[])
       while( newVertex != termination )
       {
         // Get distance and predecessor matrices from master
-        MPI_Recv(distances, ROWS, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD, &status);
-        MPI_Recv(predecessors, ROWS, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD, &status);
+        MPI_Recv(distances, VERTICES, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD, &status);
+        MPI_Recv(predecessors, VERTICES, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD, &status);
         
         // Set count of new optimal paths found
         counter = 0;
 
         // Loop through each vertex to consider
-        for (index = 0; index < ROWS; index++)
+        for (index = 0; index < VERTICES; index++)
         {
           // Check if node is neigbor to current vertex
           if (graph[newVertex][index] != INF)
@@ -228,8 +208,6 @@ int main(int argc, char *argv[])
         MPI_Recv(&newVertex, 1, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD, &status);             
       }
     }
-
-*/
 }
 
 void initializeGraph(int graph[][VERTICES])
