@@ -1,4 +1,4 @@
-#include <mpi.h>
+//#include <mpi.h>
 #include <cstdlib>
 #include <iostream>
 #include <limits>
@@ -33,11 +33,11 @@ int graph[ROWS][COLS] =
   { INF, INF, INF, INF, INF, INF },
 };
 
-void genConnectedGraph(int** graph, bool isDirected);
+void genConnectedGraph(int graph[][VERTICES], bool isDirected);
 
-bool isConnected(int** graph);
+bool isConnected(int graph[][VERTICES]);
 
-void initializeGraph(int** graph);
+void initializeGraph(int graph[][VERTICES]);
 
 int main(int argc, char *argv[])
 {
@@ -47,14 +47,24 @@ int main(int argc, char *argv[])
   int index, currentVertex, newVertex, newDist, source;
   int distances[ROWS];
   int predecessors[ROWS];
-  MPI_Status status;
+//  MPI_Status status;
   queue<int> vertexQueue;
   int counter = 0;
   int termination = -1;
   int myGraph[VERTICES][VERTICES];
 
     initializeGraph(myGraph);
+    genConnectedGraph(myGraph, false);
 
+    for(int rowIndex = 0; rowIndex < VERTICES; rowIndex++)
+    {
+      for(int colIndex = 0; colIndex < VERTICES; colIndex++)
+      {
+        cout << myGraph[rowIndex][colIndex] << "\t";
+      }
+      cout << endl;  
+    }
+/*
     // Initialize MPI
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &numTasks);
@@ -218,9 +228,11 @@ int main(int argc, char *argv[])
         MPI_Recv(&newVertex, 1, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD, &status);             
       }
     }
+
+*/
 }
 
-void initializeGraph(int** graph)
+void initializeGraph(int graph[][VERTICES])
 {
   for(int rowIndex = 0; rowIndex < VERTICES; rowIndex++)
   {
@@ -238,15 +250,15 @@ void initializeGraph(int** graph)
   }
 }
 
-void genConnectedGraph(int** graph, bool isDirected)
+void genConnectedGraph(int graph[][VERTICES], bool isDirected)
 {
   // initialize function/variables
   int outerIndex, innerIndex, rowIndex, colIndex;
   int neighborVal, randomDistance;
   random_device rd;
-  default_random_engine_generator(rd());
-  uniform_real_distribution<int> dist(MIN_DIST, MAX_DISt);
-  uniform_real_distribution<int> dist2(0, 100);
+  default_random_engine generator(rd());
+  uniform_int_distribution<int> dist(MIN_DIST, MAX_DIST);
+  uniform_int_distribution<int> dist2(0, 100);
   
   // Loop while graph generated is not connected
   do
@@ -260,17 +272,21 @@ void genConnectedGraph(int** graph, bool isDirected)
         // Loop through each column
         for(colIndex = 0; colIndex < VERTICES; colIndex++)
         {
-          // Generate value to check if vertices are neighbors
-          neighborVal = dist2(generator);
-
-          // Check if value indicates vertices are neighbors
-          if(neighborVal <= NEIGHBOR_PROB)
+          // Check if edge is not self
+          if(rowIndex != colIndex)
           {
-            // Generate random distance for the edge
-            randomDistance = dist(generator);
+            // Generate value to check if vertices are neighbors
+            neighborVal = dist2(generator);
 
-            // Set distance
-            graph[rowIndex][colIndex] = randomDistance;
+            // Check if value indicates vertices are neighbors
+            if(neighborVal <= NEIGHBOR_PROB)
+            {
+              // Generate random distance for the edge
+              randomDistance = dist(generator);
+
+              // Set distance
+              graph[rowIndex][colIndex] = randomDistance;
+            } 
           }
         }
       }
@@ -301,22 +317,22 @@ void genConnectedGraph(int** graph, bool isDirected)
       }
     }
   }
-  while(!isConnected(graph))
+  while(!isConnected(graph));
 }
 
-bool isConnected(int** graph)
+bool isConnected(int graph[][VERTICES])
 {
   // initialize function/variables
   stack<int> vertices;
   int vertex;
-  bool nodesVisisted[VERTICES];
+  bool nodesVisited[VERTICES];
   int index; 
   bool isConnected = true;
 
     // initialize nodes visited array
     for(index = 0; index < VERTICES; index++)
     {
-      nodesVisisted[index] = false;
+      nodesVisited[index] = false;
     }
 
   // Perform a depth-first traversal of the graph
