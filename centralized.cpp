@@ -15,7 +15,7 @@ const int MAX_DIST = 200;
 const int NEIGHBOR_PROB = 30;
 
 const int VERTICES = 6;
-const bool IS_DIRECTED = false;
+const bool IS_DIRECTED = true;
 const int MASTER = 0;
 
 const int INF = std::numeric_limits<int>::max();
