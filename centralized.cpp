@@ -5,6 +5,7 @@
 #include <queue>
 #include <random>
 #include <stack>
+#include <fstream>
 
 using namespace std;
 
@@ -26,6 +27,7 @@ void genConnectedGraph(int graph[][VERTICES], bool isDirected);
 
 bool isConnected(int graph[][VERTICES]);
 
+bool outputToFile(int graph[][VERTICES]);
 
 int main(int argc, char *argv[])
 {
@@ -44,6 +46,7 @@ int main(int argc, char *argv[])
     // Initialize and generate random values for graph
     initializeGraph(graph);
     genConnectedGraph(graph, IS_DIRECTED);
+    outputToFile(graph);
 
     // Initialize MPI
     MPI_Init(&argc, &argv);
@@ -133,7 +136,7 @@ int main(int argc, char *argv[])
 
       // Loop for each worker node
       counter = 0;
-      while(counter > 0)
+      while(counter < numTasks)
       {        
         // Get worker node's request message
         MPI_Recv(&src, 1, MPI_INT, MPI_ANY_SOURCE, requestTag, MPI_COMM_WORLD, &status);     
@@ -208,6 +211,10 @@ int main(int argc, char *argv[])
         MPI_Recv(&newVertex, 1, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD, &status);             
       }
     }
+
+    // Shut down
+    MPI_Finalize();
+    return 0;
 }
 
 void initializeGraph(int graph[][VERTICES])
@@ -354,4 +361,27 @@ bool isConnected(int graph[][VERTICES])
     }
 
   return isConnected;
+}
+
+
+bool outputToFile(int graph[][VERTICES])
+{
+  // initialize function/variables
+  ofstream fout;
+
+  // Open output file
+  fout.open("graph.csv");
+
+  // Print graph to file in csv format
+  for(int rowIndex = 0; rowIndex < VERTICES; rowIndex++)
+  {
+    for(int colIndex = 0; colIndex < VERTICES; colIndex++)
+    {
+      fout << graph[rowIndex][colIndex] << ", ";
+    } 
+
+    fout << endl;
+  }
+
+  fout.close();
 }
