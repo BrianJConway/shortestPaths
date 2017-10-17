@@ -98,7 +98,9 @@ int main(int argc, char *argv[])
         MPI_Send(&currentVertex, 1, MPI_INT, src, requestTag, MPI_COMM_WORLD);
         MPI_Send(distances, VERTICES, MPI_INT, src, requestTag, MPI_COMM_WORLD);
         MPI_Send(predecessors, VERTICES, MPI_INT, src, requestTag, MPI_COMM_WORLD);
-                
+
+cout << "M sent " << currentVertex << " to " << src << endl;
+
         // Get vertex count from any worker node
         MPI_Recv(&counter, 1, MPI_INT, MPI_ANY_SOURCE, responseTag, MPI_COMM_WORLD, &status);      
         src = status.MPI_SOURCE;
@@ -115,6 +117,8 @@ int main(int argc, char *argv[])
           
           // Append vertex to queue for re-examining
           vertexQueue.push(newVertex);
+
+cout << "M got " << newVertex << " from " << src << endl;
         }
       }
 
