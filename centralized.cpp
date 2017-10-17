@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 
       // Loop for each worker node
       counter = 0;
-      while(counter < numTasks)
+      while(counter < numTasks - 1)
       {        
         // Get worker node's request message
         MPI_Recv(&src, 1, MPI_INT, MPI_ANY_SOURCE, requestTag, MPI_COMM_WORLD, &status);     
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
       }      
     }
   // Otherwise, assume worker node
-  else if(rank < numTasks - 1)
+  else if(rank < numTasks)
     {
       // Send first request for task to master node
       MPI_Send(&rank, 1, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD);
