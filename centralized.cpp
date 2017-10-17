@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
       }      
     }
   // Otherwise, assume worker node
-  else if(rank < numTasks)
+  else if(rank < numTasks - 1)
     {
       // Send first request for task to master node
       MPI_Send(&rank, 1, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD);
