@@ -5,7 +5,7 @@ using namespace std;
 
 const int MASTER = 0;
 
-void master(int graph[][VERTICES], int distances[], int predecessors[], int numTasks, int rank);
+void master(int graph[][VERTICES], int distances[], int predecessors[], int numTasks, int rank, int source);
 
 void worker(int graph[][VERTICES], int distances[], int predecessors[], int numTasks, int rank);
 
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
   // Check if master node
   if( rank == 0 )
     {
-      master(graph, distances, predecessors, numTasks, rank);
+      master(graph, distances, predecessors, numTasks, rank, source);
     }
   // Otherwise, assume worker node
   else if(rank < numTasks)
@@ -69,12 +69,12 @@ int main(int argc, char *argv[])
 }
 
 
-void master(int graph[][VERTICES], int distances[], int predecessors[], int numTasks, int rank)
+void master(int graph[][VERTICES], int distances[], int predecessors[], int numTasks, int rank, int source)
 {
   //initialize function/variables 
   int dest, src, requestTag = 1;
   int responseTag = 2;
-  int index, currentVertex, newVertex, newDist, source;
+  int index, currentVertex, newVertex, newDist;
   MPI_Status status;
   queue<int> vertexQueue;
   int counter = 0;
