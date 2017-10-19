@@ -176,9 +176,9 @@ void strongConnect(
 {
   // initialize function/variables
   int index;
-  numNodesVisited++;
   whenVisited[vertex] = numNodesVisited;
   roots[vertex] = numNodesVisited;
+  numNodesVisited++;
 
 cout << "StrongConnect vertex " << vertex << endl;
 cout << "Num SCC: " << numSccs << endl;
