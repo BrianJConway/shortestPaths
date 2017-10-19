@@ -175,7 +175,7 @@ void strongConnect(
   // Loop through all neighbors of the vertex
   for(index = 0; index < VERTICES; index++)
   {
-    if(graph[vertex][index] != INF)
+    if(graph[vertex][index] != INF && index != vertex)
     {
       // Check if the neighbor hasn't been visited
       if(whenVisited[index] == INF)
