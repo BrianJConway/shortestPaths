@@ -169,6 +169,7 @@ void strongConnect(
   int index;
   numNodesVisited++;
   whenVisited[vertex] = numNodesVisited;
+  roots[vertex] = whenVisited[vertex];
 
   vertexStack.push(vertex);
 
