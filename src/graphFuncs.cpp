@@ -114,6 +114,8 @@ bool isConnected(int graph[][VERTICES])
 
   if(IS_DIRECTED)
   {
+cout << "Starting tarjan" << endl;
+
     // Use tarjan's algorithm to check if directed graph is one SCC
     return tarjan(graph) == 1;
   }
@@ -145,6 +147,8 @@ int tarjan(int graph[][VERTICES])
 
   for(index = 0; index < VERTICES; index++)
   {
+cout << "Tarjan's, vertex " << index << endl;
+    
     // Check if vertex not visited yet
     if(!whenVisited[index] == INF)
     {
