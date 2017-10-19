@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
     // Initialize and generate random values for graph
     initializeGraph(graph);
-    genConnectedGraph(graph, IS_DIRECTED);
+    genConnectedGraph(graph);
     outputToFile(graph);
 
     // Initialize MPI
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
         return 0;
       }
 
-    // Set source vertex
+    // Set source vertex for paths 
     source = 0;
 
     // Initialize distances and predecessor arrays
@@ -63,7 +63,6 @@ int main(int argc, char *argv[])
       worker(graph, distances, predecessors, numTasks, rank);      
     }
 
-    // Shut down
     MPI_Finalize();
     return 0;
 }
@@ -80,7 +79,6 @@ void master(int graph[][VERTICES], int distances[], int predecessors[], int numT
   int counter = 0;
   int termination = -1;
 
-  // Push source vertex to queue
   vertexQueue.push(source);
 
   // Loop while there are vertices to process
@@ -117,7 +115,6 @@ void master(int graph[][VERTICES], int distances[], int predecessors[], int numT
     }
   }
 
-  // Output results
   printResults(distances, predecessors);
 
   // Loop for each worker node
@@ -150,14 +147,14 @@ void worker(int graph[][VERTICES], int distances[], int predecessors[], int numT
   // Get response from master
   MPI_Recv(&newVertex, 1, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD, &status);     
         
-  // Loop while response is not termination 
+  // Loop while master node has not indicated termination
   while( newVertex != termination )
   {
     // Get distance and predecessor arrays from master
     MPI_Recv(distances, VERTICES, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD, &status);
     MPI_Recv(predecessors, VERTICES, MPI_INT, MASTER, requestTag, MPI_COMM_WORLD, &status);
     
-    // Set count of new optimal paths found
+    // Reset count of new optimal paths found
     counter = 0;
   
     // Loop through each vertex to consider

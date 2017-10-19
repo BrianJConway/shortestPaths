@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <random>
 #include <limits>
+#include <algorithm>
 
 using namespace std;
 
@@ -24,11 +25,25 @@ const int INF = std::numeric_limits<int>::max();
 
 void initializeGraph(int graph[][VERTICES]);
 
-void genConnectedGraph(int graph[][VERTICES], bool isDirected);
+void genConnectedGraph(int graph[][VERTICES]);
+
+bool outputToFile(int graph[][VERTICES]);
 
 bool isConnected(int graph[][VERTICES]);
 
-bool outputToFile(int graph[][VERTICES]);
+int tarjan(int graph[][VERTICES]);
+
+void strongConnect(
+  int vertex,
+  int graph[][VERTICES], 
+  stack<int>& vertexStack, 
+  int& numNodesVisited, 
+  int& numSccs, 
+  int whenVisited[], 
+  int roots[], 
+  bool isOnStack[] );
+
+bool depthFirstSearch(int graph[][VERTICES]);
 
 bool printResults(int distances[], int predecessors[]);
 

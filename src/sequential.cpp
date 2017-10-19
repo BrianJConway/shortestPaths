@@ -1,5 +1,3 @@
-#include <iostream>
-#include <queue>
 #include <cstdlib>
 #include "graphFuncs.h"
 
@@ -17,16 +15,14 @@ int main()
 
     // Initialize and generate random values for graph
     initializeGraph(graph);
-    genConnectedGraph(graph, IS_DIRECTED);
+    genConnectedGraph(graph);
     outputToFile(graph);
 
   // Apply bellman-ford algorithm to find shortest paths
   bellmanFord(0, graph, distances, predecessors);
 
-  // Output results
   printResults(distances, predecessors);
 
-  // Shutdown
   return 0;
 }
 
@@ -54,7 +50,6 @@ void bellmanFord(int source, int graph[][VERTICES], int distances[], int predece
     predecessors[index] = -1;
   }
 
-  // Loop while vertex queue is not empty
   while (!vertexQueue.empty())
   {
     // Dequeue current vertex
