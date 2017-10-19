@@ -12,7 +12,7 @@
 
 using namespace std;
 
-const int VERTICES = 6;
+const int VERTICES = 600;
 
 const int MIN_DIST = 0;
 const int MAX_DIST = 1000;
