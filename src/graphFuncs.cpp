@@ -31,6 +31,9 @@ void genConnectedGraph(int graph[][VERTICES])
   // Loop until a connected graph is generated
   do
   {
+    // Reset graph
+    initializeGraph(graph);
+    
     // Check if graph should be directed
     if(IS_DIRECTED)
     {
@@ -146,12 +149,12 @@ int tarjan(int graph[][VERTICES])
     }
 
   for(index = 0; index < VERTICES; index++)
-  {
-cout << "Tarjan's, vertex " << index << endl;
-    
+  {    
     // Check if vertex not visited yet
     if(whenVisited[index] == INF)
     {
+cout << "Tarjan's, vertex " << index << endl;
+      
       strongConnect(index, graph, vertices, numNodesVisited, numSccs, whenVisited, roots, isOnStack);
     }
   }
@@ -189,6 +192,8 @@ cout << "StrongConnect vertex " << vertex << endl;
       // Check if the neighbor hasn't been visited
       if(whenVisited[index] == INF)
       {
+cout << "adding neighbor of " << vertex << " to stack: " << index << endl;
+        
         strongConnect(index, graph, vertexStack, numNodesVisited, numSccs, whenVisited, roots, isOnStack);
         roots[vertex] = min(roots[vertex], roots[index]);
       }
