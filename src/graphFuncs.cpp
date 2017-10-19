@@ -169,7 +169,9 @@ void strongConnect(
   int index;
   numNodesVisited++;
   whenVisited[vertex] = numNodesVisited;
-  roots[vertex] = whenVisited[vertex];
+  roots[vertex] = numNodesVisited;
+
+cout << "StrongConnect vertex " << vertex << endl;
 
   vertexStack.push(vertex);
 
@@ -198,10 +200,12 @@ void strongConnect(
 
     // Remove all elements from stack that are part of the current SCC
     do
-    {
+    {      
       index = vertexStack.top();
       vertexStack.pop();
 
+cout << "Pop vertex " << index << " off stack" << endl;
+      
       // NOTE: Here is where we could add the current index to the SCC if we were recording them
     }    
     while(vertex != index);
