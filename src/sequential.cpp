@@ -14,7 +14,6 @@ int main()
   int predecessors[VERTICES];
 
     // Initialize and generate random values for graph
-    initializeGraph(graph);
     genConnectedGraph(graph);
     outputToFile(graph);
 
