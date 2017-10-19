@@ -196,7 +196,7 @@ cout << "Num SCC: " << numSccs << endl;
 
   vertexStack.push(vertex);
   isOnStack[vertex] = true;
-  
+
   // Loop through all neighbors of the vertex
   for(index = 0; index < VERTICES; index++)
   {
@@ -209,7 +209,7 @@ cout << "adding neighbor of " << vertex << " to stack: " << index << endl;
         
         strongConnect(index, graph, vertexStack, numNodesVisited, numSccs, whenVisited, roots, isOnStack);
         roots[vertex] = min(roots[vertex], roots[index]);
-cout << "Setting root of " << vertex << " to " << roots[vertex];
+cout << "Setting root of " << vertex << " to " << roots[vertex] << endl;
       }
       // Otherwise, check if the current neighbor is to be a member of the current component
       else if(isOnStack[index])
