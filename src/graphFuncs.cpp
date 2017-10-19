@@ -181,6 +181,7 @@ void strongConnect(
   roots[vertex] = numNodesVisited;
 
 cout << "StrongConnect vertex " << vertex << endl;
+cout << "Num SCC: " << numSccs << endl;
 
   vertexStack.push(vertex);
 
