@@ -158,7 +158,18 @@ cout << "Tarjan's, vertex " << index << endl;
       strongConnect(index, graph, vertices, numNodesVisited, numSccs, whenVisited, roots, isOnStack);
     }
   }
-
+  cout << "Roots: ";
+  for(index = 0; index < VERTICES; index++)
+  {
+    cout << roots[index] << " ";
+  }
+  cout << endl;
+  cout << "When Visited: ";
+  for(index = 0; index < VERTICES; index++)
+  {
+    cout << whenVisited[index] << " ";
+  }
+  cout << endl;
 cout << numSccs << endl;
 
   return numSccs;
@@ -176,9 +187,9 @@ void strongConnect(
 {
   // initialize function/variables
   int index;
+  numNodesVisited++;
   whenVisited[vertex] = numNodesVisited;
   roots[vertex] = numNodesVisited;
-  numNodesVisited++;
 
 cout << "StrongConnect vertex " << vertex << endl;
 cout << "Num SCC: " << numSccs << endl;
@@ -203,7 +214,7 @@ cout << "Setting root of " << vertex << " to " << roots[vertex];
       else if(isOnStack[index])
       {
         roots[vertex] = min(roots[vertex], whenVisited[index]);        
-cout << "Setting root of " << vertex << " to " << roots[vertex];        
+cout << "Setting root of " << vertex << " to " << roots[vertex] << endl;        
       }
     }
   }
@@ -226,13 +237,6 @@ cout << "Pop vertex " << index << " off stack" << endl;
     }    
     while(vertex != index);
   }
-
-  cout << "Roots: ";
-  for(index = 0; index < VERTICES; index++)
-  {
-    cout << roots[index] << " ";
-  }
-  cout << endl;
 }
 
 bool depthFirstSearch(int graph[][VERTICES])
