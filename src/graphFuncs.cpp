@@ -150,7 +150,7 @@ int tarjan(int graph[][VERTICES])
 cout << "Tarjan's, vertex " << index << endl;
     
     // Check if vertex not visited yet
-    if(!whenVisited[index] == INF)
+    if(whenVisited[index] == INF)
     {
       strongConnect(index, graph, vertices, numNodesVisited, numSccs, whenVisited, roots, isOnStack);
     }
