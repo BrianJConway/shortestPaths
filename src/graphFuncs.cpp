@@ -223,6 +223,13 @@ cout << "Pop vertex " << index << " off stack" << endl;
     }    
     while(vertex != index);
   }
+
+  cout << "Roots: ";
+  for(index = 0; index < VERTICES; index++)
+  {
+    cout << roots[index] << " ";
+  }
+  cout << endl;
 }
 
 bool depthFirstSearch(int graph[][VERTICES])
