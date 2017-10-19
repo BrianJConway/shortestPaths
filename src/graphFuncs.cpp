@@ -208,6 +208,7 @@ cout << "adding neighbor of " << vertex << " to stack: " << index << endl;
   // Check if vertex is the root of it's component
   if(whenVisited[vertex] == roots[vertex])
   {
+cout <<"Vertex " << vertex << " incrementing SCC count" << endl;
     numSccs++;
 
     // Remove all elements from stack that are part of the current SCC
