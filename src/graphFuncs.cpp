@@ -156,6 +156,8 @@ cout << "Tarjan's, vertex " << index << endl;
     }
   }
 
+cout << numSccs << endl;
+
   return numSccs;
 }
 
