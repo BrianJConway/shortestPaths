@@ -12,10 +12,10 @@
 
 using namespace std;
 
-const int VERTICES = 600;
+const int VERTICES = 5;
 
 const int MIN_DIST = 0;
-const int MAX_DIST = 1000;
+const int MAX_DIST = 10;
 
 const int NEIGHBOR_PROB = 10;
 
