@@ -152,33 +152,14 @@ int tarjan(int graph[][VERTICES])
   {    
     // Check if vertex not visited yet
     if(whenVisited[index] == INF)
-    {
-cout << "Tarjan's, vertex " << index << endl;
-      
+    {      
       strongConnect(index, graph, vertices, numNodesVisited, numSccs, whenVisited, roots, isOnStack);
     }
   }
-  cout << "Roots: ";
-  for(index = 0; index < VERTICES; index++)
-  {
-    cout << roots[index] << " ";
-  }
-  cout << endl;
-  cout << "When Visited: ";
-  for(index = 0; index < VERTICES; index++)
-  {
-    cout << whenVisited[index] << " ";
-  }
-  cout << endl;
-cout << numSccs << endl;
 
   return numSccs;
 }
 
-// NOTE: BUG WHERE ROOTS ARE NOT SET PROPERLY. IF ROOTS ARE NOT ALL ZERO, IT'S BECAUSE
-// NON-ZERO ROOT GUY IS NOT THE FIRST NEIGHBOR OF A VERTEX, ONLY DFS TRAVERSALS
-// THAT GO IN A STRAIGHT LINE HAVE ALL ZEROS, MUST FIX
-// THOUGH IT SEEMS CONNECTED GRAPHS ARE BEING GENERATED OVERALL
 void strongConnect(
   int vertex,
   int graph[][VERTICES], 
@@ -194,9 +175,6 @@ void strongConnect(
   whenVisited[vertex] = numNodesVisited;
   roots[vertex] = numNodesVisited;
   numNodesVisited++;
-  
-cout << "StrongConnect vertex " << vertex << endl;
-cout << "Num SCC: " << numSccs << endl;
 
   vertexStack.push(vertex);
   isOnStack[vertex] = true;
@@ -208,25 +186,20 @@ cout << "Num SCC: " << numSccs << endl;
     {
       // Check if the neighbor hasn't been visited
       if(whenVisited[index] == INF)
-      {
-cout << "adding neighbor of " << vertex << " to stack: " << index << endl;
-        
+      {        
         strongConnect(index, graph, vertexStack, numNodesVisited, numSccs, whenVisited, roots, isOnStack);
         roots[vertex] = min(roots[vertex], roots[index]);
-cout << "Setting root of " << vertex << " to " << roots[vertex] << endl;
       }
       // Otherwise, check if the current neighbor is to be a member of the current component
       else if(isOnStack[index])
       {
         roots[vertex] = min(roots[vertex], whenVisited[index]);        
-cout << "Setting root of " << vertex << " to " << roots[vertex] << endl;        
       }
     }
   }
   // Check if vertex is the root of it's component
   if(whenVisited[vertex] == roots[vertex])
   {
-cout <<"Vertex " << vertex << " incrementing SCC count" << endl;
     numSccs++;
 
     // Remove all elements from stack that are part of the current SCC
@@ -235,8 +208,6 @@ cout <<"Vertex " << vertex << " incrementing SCC count" << endl;
       index = vertexStack.top();
       vertexStack.pop();
       isOnStack[index] = false;
-
-cout << "Pop vertex " << index << " off stack" << endl;
       
       // NOTE: Here is where we could add the current index to the SCC if we were recording them
     }    

@@ -19,7 +19,7 @@ const int MAX_DIST = 10;
 
 const int NEIGHBOR_PROB = 10;
 
-const bool IS_DIRECTED = true;
+const bool IS_DIRECTED = false;
 
 const int INF = std::numeric_limits<int>::max();
 
