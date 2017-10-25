@@ -116,7 +116,6 @@ cout << "Master popping " << currentVertex << " off of queue, sending to " << sr
 cout << "Master pushing " << newVertex << " onto queue." << endl;
     }
 
-    for(int index = 0;)
     printResults(distances, predecessors);
     cout << endl << endl;
   }
