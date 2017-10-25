@@ -113,7 +113,7 @@ cout << "Master popping " << currentVertex << " off of queue, sending to " << sr
       
       // Append vertex to queue for re-examining
       vertexQueue.push(newVertex);
-cout << "Master pushing " << newVertex << " onto queue." << endl;
+cout << "Master pushing " << newVertex << " onto queue, from " << src << endl;
     }
 
     printResults(distances, predecessors);
