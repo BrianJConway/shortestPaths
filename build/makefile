@@ -33,6 +33,9 @@ sequential: $(OUTPUT)
 centralized_2: $(OUTPUT)
 	mpirun -n 2 -host master,node001 ./$(OUTPUT2)
 
+centralized_3: $(OUTPUT)
+	mpirun -n 3 -host master,node001,node002 ./$(OUTPUT2)
+
 centralized_4: $(OUTPUT)
 	mpirun -n 4 -host master,node001,node002,node003 ./$(OUTPUT2)
 
