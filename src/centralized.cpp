@@ -115,6 +115,7 @@ void master(int graph[][VERTICES], int distances[], int predecessors[], int numT
     }
 
     printResults(distances, predecessors);
+    cout << endl << endl;
   }
 
   printResults(distances, predecessors);
