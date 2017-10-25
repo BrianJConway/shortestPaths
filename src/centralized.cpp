@@ -113,6 +113,8 @@ void master(int graph[][VERTICES], int distances[], int predecessors[], int numT
       // Append vertex to queue for re-examining
       vertexQueue.push(newVertex);
     }
+
+    printResults(distances, predecessors);
   }
 
   printResults(distances, predecessors);
