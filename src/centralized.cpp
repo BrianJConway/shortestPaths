@@ -90,7 +90,8 @@ void master(int graph[][VERTICES], int distances[], int predecessors[], int numT
     // Extract current vertex
     currentVertex = vertexQueue.front();
     vertexQueue.pop();
-
+cout << "Master popping " << currentVertex << " off of queue, sending to " << src << endl;
+    
     // Send worker node its task and the distance/predecessor arrays
     MPI_Send(&currentVertex, 1, MPI_INT, src, requestTag, MPI_COMM_WORLD);
     MPI_Send(distances, VERTICES, MPI_INT, src, requestTag, MPI_COMM_WORLD);
@@ -112,8 +113,10 @@ void master(int graph[][VERTICES], int distances[], int predecessors[], int numT
       
       // Append vertex to queue for re-examining
       vertexQueue.push(newVertex);
+cout << "Master pushing " << newVertex << " onto queue." << endl;
     }
 
+    for(int index = 0;)
     printResults(distances, predecessors);
     cout << endl << endl;
   }
